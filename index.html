@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Dots - How to Play</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .game-section {
+            display: none;
+        }
+
+        .game-section.active {
+            display: block;
+        }
+
+        .instructions {
+            margin-bottom: 30px;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .instruction-item:hover {
+            transform: translateX(10px);
+            background: #ebebeb;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            flex-shrink: 0;
+            margin-right: 20px;
+        }
+
+        .instruction-text h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+        }
+
+        .instruction-text p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .game-canvas {
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            display: block;
+            margin: 20px auto;
+            background: #000;
+            cursor: crosshair;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .score-display span {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-over h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .game-over .final-score {
+            font-size: 3em;
+            color: #764ba2;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Catch the Dots</h1>
+            <p>A fast-paced clicking game</p>
+        </div>
+
+        <div class="content">
+            <!-- Instructions Section -->
+            <div id="instructions-section" class="game-section active">
+                <div class="instructions">
+                    <div class="instruction-item">
+                        <div class="step-number">1</div>
+                        <div class="instruction-text">
+                            <h3>Objective</h3>
+                            <p>Click on the moving dots before they disappear! Each successful click earns you points.</p>
+                        </div>
+                    </div>
+
+                    <div class="instruction-item">
+                        <div class="step-number">2</div>
+                        <div class="instruction-text">
+                            <h3>How to Play</h3>
+                            <p>Dots will appear randomly on the screen. Use your mouse or finger to click/tap them as quickly as possible.</p>
+                        </div>
+                    </div>
+
+                    <div class="instruction-item">
+                        <div class="step-number">3</div>
+                        <div class="instruction-text">
+                            <h3>Scoring</h3>
+                            <p>Green dots = 10 points | Yellow dots = 20 points | Red dots = 30 points. Faster clicks = bonus points!</p>
+                        </div>
+                    </div>
+
+                    <div class="instruction-item">
+                        <div class="step-number">4</div>
+                        <div class="instruction-text">
+                            <h3>Game Over</h3>
+                            <p>The game lasts 30 seconds. Try to score as many points as possible before time runs out!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn" onclick="startGame()">Start Playing</button>
+                </div>
+            </div>
+
+            <!-- Game Section -->
+            <div id="game-section" class="game-section">
+                <div class="score-display">
+                    Score: <span id="score">0</span> | Time: <span id="timer">30</span>s
+                </div>
+                <canvas id="gameCanvas" class="game-canvas" width="700" height="500"></canvas>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="pauseGame()">Pause</button>
+                    <button class="btn btn-secondary" onclick="quitGame()">Quit</button>
+                </div>
+            </div>
+
+            <!-- Game Over Section -->
+            <div id="gameover-section" class="game-section">
+                <div class="game-over">
+                    <h2>🎉 Game Over!</h2>
+                    <div class="final-score" id="finalScore">0</div>
+                    <p style="font-size: 1.2em; color: #666; margin-bottom: 30px;">Great job!</p>
+                    <div class="button-group">
+                        <button class="btn" onclick="restartGame()">Play Again</button>
+                        <button class="btn btn-secondary" onclick="showInstructions()">Instructions</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+        let gamePaused = false;
+        let dots = [];
+        let gameInterval;
+        let timerInterval;
+        let spawnInterval;
+
+        class Dot {
+            constructor() {
+                this.radius = 20 + Math.random() * 20;
+                this.x = this.radius + Math.random() * (canvas.width - 2 * this.radius);
+                this.y = this.radius + Math.random() * (canvas.height - 2 * this.radius);
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
+                this.lifetime = 2000 + Math.random() * 2000;
+                this.created = Date.now();
+
+                const rand = Math.random();
+                if (rand < 0.5) {
+                    this.color = '#4ade80';
+                    this.points = 10;
+                } else if (rand < 0.8) {
+                    this.color = '#fbbf24';
+                    this.points = 20;
+                } else {
+                    this.color = '#ef4444';
+                    this.points = 30;
+                }
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+                    this.vx *= -1;
+                }
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+                    this.vy *= -1;
+                }
+
+                this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+            }
+
+            draw() {
+                const age = Date.now() - this.created;
+                const opacity = 1 - (age / this.lifetime);
+
+                ctx.save();
+                ctx.globalAlpha = opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            isExpired() {
+                return Date.now() - this.created > this.lifetime;
+            }
+
+            contains(x, y) {
+                const dx = x - this.x;
+                const dy = y - this.y;
+                return dx * dx + dy * dy <= this.radius * this.radius;
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.game-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function showInstructions() {
+            showSection('instructions-section');
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            dots = [];
+            gameActive = true;
+            gamePaused = false;
+
+            document.getElementById('score').textContent = score;
+            document.getElementById('timer').textContent = timeLeft;
+
+            showSection('game-section');
+
+            spawnInterval = setInterval(() => {
+                if (!gamePaused && gameActive) {
+                    dots.push(new Dot());
+                }
+            }, 800);
+
+            timerInterval = setInterval(() => {
+                if (!gamePaused && gameActive) {
+                    timeLeft--;
+                    document.getElementById('timer').textContent = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+                }
+            }, 1000);
+
+            gameInterval = requestAnimationFrame(gameLoop);
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            if (!gamePaused) {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                dots = dots.filter(dot => !dot.isExpired());
+
+                dots.forEach(dot => {
+                    dot.update();
+                    dot.draw();
+                });
+            }
+
+            gameInterval = requestAnimationFrame(gameLoop);
+        }
+
+        function pauseGame() {
+            gamePaused = !gamePaused;
+            event.target.textContent = gamePaused ? 'Resume' : 'Pause';
+        }
+
+        function quitGame() {
+            endGame();
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            clearInterval(spawnInterval);
+            cancelAnimationFrame(gameInterval);
+
+            document.getElementById('finalScore').textContent = score;
+            showSection('gameover-section');
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        canvas.addEventListener('click', (e) => {
+            if (!gameActive || gamePaused) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            for (let i = dots.length - 1; i >= 0; i--) {
+                if (dots[i].contains(x, y)) {
+                    score += dots[i].points;
+                    document.getElementById('score').textContent = score;
+                    dots.splice(i, 1);
+                    break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
